@@ -42,8 +42,9 @@ func main() {
 		Each(func(index int, item *goquery.Selection) {
 			h2 := item.Find("h2")
 			title := strings.TrimSpace(h2.Text())
+			url, _ := h2.Find("a").Attr("href")
 
-			fmt.Println(title)
+			fmt.Println(title, url)
 		})
 
 	// writeFile(river, "index.html")
