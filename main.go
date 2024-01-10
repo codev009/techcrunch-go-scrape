@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/csv"
 	"fmt"
 	"net/http"
 	"os"
@@ -37,15 +38,22 @@ func main() {
 	doc, error := goquery.NewDocumentFromReader(response.Body)
 	check(error)
 
+	file, error := os.Create("posts.csv")
+
+	writer := csv.NewWriter(file)
+
 	doc.Find("div.river").
 		Find("div.post-block").
 		Each(func(index int, item *goquery.Selection) {
 			h2 := item.Find("h2")
 			title := strings.TrimSpace(h2.Text())
 			url, _ := h2.Find("a").Attr("href")
+			excert := strings.TrimSpace(item.Find("div.post-block__content").Text())
 
-			fmt.Println(title, url)
+			posts := []string{title, url, excert}
+
+			writer.Write(posts)
 		})
 
-	// writeFile(river, "index.html")
+	writer.Flush()
 }
