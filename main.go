@@ -36,9 +36,14 @@ func main() {
 	doc, error := goquery.NewDocumentFromReader(response.Body)
 	check(error)
 
-	river, error := doc.Find("div.river").Html()
-	check(error)
+	doc.Find("div.river").
+		Find("div.post-block").
+		Each(func(index int, item *goquery.Selection) {
+			h2 := item.Find("h2")
+			title := h2.Text()
 
-	// fmt.Println(river)
-	writeFile(river, "index.html")
+			fmt.Println(title)
+		})
+
+	// writeFile(river, "index.html")
 }
